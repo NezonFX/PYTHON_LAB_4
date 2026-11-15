@@ -3,9 +3,11 @@ import requests
 
 csv_file = open("countries_data.csv", "w", encoding='utf-8')
 csv_file.write("country,city,area,population\n")
-country_list = []
 file = open("countries.txt","r", encoding='utf-8')
 for line in file:
+    capital = ""
+    area = ""
+    population = ""
     url = f'https://en.wikipedia.org/wiki/{line.strip()}'
     headers = {
     'User-Agent': 'CountriesProject/1.0 (student@example.com)'
@@ -16,7 +18,6 @@ for line in file:
     soup = BeautifulSoup(response.text,'lxml')
     title = soup.find('span',class_='mw-page-title-main')
     title = title.text
-    country_list.append(title)
     
     infobox = soup.find('table', class_='infobox')
     
@@ -29,7 +30,6 @@ for line in file:
                 break
         if capital_th:
             capital = capital_th.find_next_sibling('td').find('a').get_text(strip=True)
-            country_list.append(capital)
             
         area_th = None
         for th in infobox.find_all('th'):
@@ -42,7 +42,6 @@ for line in file:
             if 'km2' in raw_area:
                 new_area = raw_area.split('km2')[0].strip()
                 area = new_area.split('[')[0].strip()
-                country_list.append(area)
             
         population_th = None
         for th in infobox.find_all('th'):
@@ -53,8 +52,7 @@ for line in file:
         if population_th:
             raw_population = population_th.find_next_sibling('td').get_text(strip=True)
             population = raw_population.split('[')[0].strip()
-            country_list.append(population)
-csv_file.writelines(country_list)
+    csv_file.write(f"{title},{capital},{area},{population}\n")
 file.close()
 csv_file.close()
 

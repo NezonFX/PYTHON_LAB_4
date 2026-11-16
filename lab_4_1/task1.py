@@ -1,9 +1,15 @@
 from bs4 import BeautifulSoup
 import requests
+import argparse
 
-csv_file = open("countries_data.csv", "w", encoding='utf-8')
+
+parser = argparse.ArgumentParser(description='Work with files')
+parser.add_argument('--input',dest='filename_in', nargs='?', default='countries.txt', help='Входной файл')
+parser.add_argument('--output', dest='filename_out',nargs='?', default='countries_data.csv', help='Выходной файл')
+args = parser.parse_args()
+csv_file = open(args.filename_out, "w", encoding='utf-8')
 csv_file.write("country,city,area,population\n")
-file = open("countries.txt","r", encoding='utf-8')
+file = open(args.filename_in,"r", encoding='utf-8')
 for line in file:
     capital = ""
     area = ""
